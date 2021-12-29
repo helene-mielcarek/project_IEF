@@ -1,0 +1,93 @@
+<!-- Button trigger modal -->
+<div id="form-add-event-participant">
+{# si utilisation du nb d'enfant #}
+    {# {% set participantOrNot = false %}
+    {% for participation in event.participants %} 
+
+      {% if participantOrNot == false %}
+    {% for user in participation.user %} 
+
+          {% if user == app.user %}
+              {% set participantOrNot = true %}
+          {% else %} 
+              {% set participantOrNot = false %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+    {% if participantOrNot == true %}
+      <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#add-participant">
+        Modifier notre participation
+      </button>  {% else %}
+      <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#add-participant">
+        Tu veux y participer?
+      </button>
+    {% endif %} #}
+{# sinon #}
+{% if app.user in event.FamParticipants %}
+  <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#add-participant">
+    Modifier notre participation
+  </button>  {% else %}
+  <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#add-participant">
+    Tu veux y participer?
+  </button>
+  {% endif %}
+
+  <!-- Modal -->
+  <div class="modal fade" id="add-participant" tabindex="-1" aria-labelledby="add-participantLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="add-participantLabel">Je veux participer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{ form_start(form) }}
+          <div class="d-none" display="hidden">
+              {{ form_row(form.title, { attr: {novalidate: 'novalidate'}}) }}
+              {{ form_row(form.date, { attr: {novalidate: 'novalidate'}}) }}
+              {{ form_row(form.lieu, { attr: {novalidate: 'novalidate'}}) }}
+              {{ form_row(form.description, { attr: {novalidate: 'novalidate'}}) }}
+              {{ form_row(form.limite, { attr: {novalidate: 'novalidate'}}) }}
+              {{ form_row(form.img, { attr: {novalidate: 'novalidate'}}) }}
+              {{ form_row(form.complet, { attr: {novalidate: 'novalidate'}}) }}
+              {# si utilisation du nb d'enfant {{ form_row(form.participants, { attr: {novalidate: 'novalidate'}}) }} #}
+              {# sinon #}
+              {{ form_row(form.famParticipants, { attr: {novalidate: 'novalidate'}}) }}
+              {{ form_row(form.category, { attr: {novalidate: 'novalidate'}}) }}
+              {{ form_row(form.nbParticipants, { attr: {required: 'required', novalidate: 'novalidate'}}) }}
+          </div>
+          
+          {# si utilisation du nb d'enfant {{ form_row(form.nbParticipants, { attr: {required: 'required', novalidate: 'novalidate'}}) }} #}
+
+          {# si utilisation du nb d'enfant {% if participantOrNot == true %} #}
+          {# sinon #}
+          {% if app.user in event.FamParticipants %}
+
+          Vous souhaitez vous retirer des participants?
+          {# si utilisation du nb d'enfant <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="flexCheckParticipe">
+              <label class="form-check-label" for="flexCheckParticipe">
+                Nous retirer
+              </label>
+          </div> #}
+          {% else %}
+          Tu es sûr ? On t'ajoute?
+
+          {% endif %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          {# si utilisation du nb d'enfant {% if participantOrNot == true %} #}
+          {% if app.user in event.FamParticipants %}
+
+          <a class="btn btn-primary" href="{{ path('site_event_add_participant', {'id': event.id}) }}" role="button">Oui</a>
+          {% else %}
+          <a class="btn btn-primary" href="{{ path('site_event_add_participant', {'id': event.id}) }}" role="button">Nous ajouter</a>
+          {% endif %}
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

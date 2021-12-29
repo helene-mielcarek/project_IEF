@@ -1,0 +1,92 @@
+App\Entity\User:
+    user_1:
+      name (unique): 'maho'
+      email (unique): 'h@m.k'
+      password : '\$2y\$13\$5CNRbuA6Yk8hcVcGKgjzWu8jMu5PrnI6UmY0OznmlyQsT3jrKkuj2	'
+      roles: ["ROLE_ADMIN"]
+      nb_children: '<numberBetween(1,3)>'
+      createdAt: '<dateTimeInInterval("-3 week", "+3 days")>'
+
+    user_2:
+      name (unique): 'plop'
+      email (unique): 'plop@m.k'
+      password : '\$2y\$13\$5CNRbuA6Yk8hcVcGKgjzWu8jMu5PrnI6UmY0OznmlyQsT3jrKkuj2	'
+      roles: ["ROLE_MEMBER"]
+      nb_children: '<numberBetween(1,3)>'
+      createdAt: '<dateTimeInInterval("-3 week", "+3 days")>'
+
+    user{3..45}:
+      name (unique): '<userName()>'
+      email (unique): '<email()>'
+      password : '\$2y\$13\$5CNRbuA6Yk8hcVcGKgjzWu8jMu5PrnI6UmY0OznmlyQsT3jrKkuj2	'
+      roles: ['<randomElement( ["ROLE_ADMIN", "ROLE_USER", "ROLE_MEMBER"] )>']
+      nb_children: '<numberBetween(1,3)>'
+      createdAt: '<dateTimeInInterval("-3 week", "+3 days")>'
+
+App\Entity\Category:
+    category_1:
+      name: 'sortie nature'
+      description: 'Sorties pédagogiques dans un cadre naturel'
+      color (unique): '<safeHexColor()>'
+      img_defaut : 'foret.jpg'
+      createdAt: '<dateTimeInInterval("-3 week", "+3 days")>'
+
+
+    category_2:
+      name: 'sortie récréative'
+      description: "Pour s'amuser"
+      color (unique): '<safeHexColor()>'
+      img_defaut : 'nuage.jpg'
+      createdAt: '<dateTimeInInterval("-3 week", "+3 days")>'
+
+
+    category_3:
+      name: "mam's party"
+      description : 'un temps entre mamans'
+      color (unique): '<safeHexColor()>'
+      img_defaut : 'fleur.jpg'
+      createdAt: '<dateTimeInInterval("-3 week", "+3 days")>'
+
+
+    category_4:
+      name: "dad's party"
+      description : 'un temps entre papas'
+      color (unique): '<safeHexColor()>'
+      img_defaut : 'balancoire.jpg'
+      createdAt: '<dateTimeInInterval("-3 week", "+3 days")>'
+
+
+App\Entity\Event:
+  event{1..25}:
+    title: '<sentence(5)>'
+    date: '<dateTimeInInterval("-3 week", "+1 months")>'
+    lieu: '<streetAddress()>'
+    description: '<realText(200)>'
+    limite: '<randomElement( ["0", "8", "10", "15", "20"] )>'
+    img: '<randomElement( ["balancoire", "bateau", "champs", "fleur", "foret", "minerai", "nuage", "plage"] )>.jpg'
+    author: '@user*'
+    category : '<numberBetween(1, 5)>x @category*'
+    # famParticipants: '<numberBetween(1, 5)>x @user*'
+    # nbParticipants: '<numberBetween(1,20)>'
+    createdAt: '<dateTimeInInterval("-3 week", "+3 days")>'
+
+App\Entity\LibraryImg:
+    libraryImg{1..20}:
+      author: '@user*'
+      relatedEvent: '@event*'
+      status: '<randomDigit(0,1)>'
+      createdAt: '<dateTimeInInterval("-3 week", "+3 days")>'
+
+App\Entity\Image:
+    image{1..1000}:
+      name: '<imageUrl()>'
+      author: '@user*'
+      relatedLibrary: '@library*'
+      status: '<randomDigit(0,1)>'
+      createdAt: '<dateTimeInInterval("-3 week", "+3 days")>'
+
+App\Entity\Participant:
+    paticipant{1..60}:
+      user: '[@user*]'
+      event: '[@event*]'
+      number: '<numberBetween(1,4)>'

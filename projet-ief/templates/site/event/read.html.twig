@@ -1,0 +1,141 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block body %}
+{% set nbParticipants = 0 %}
+
+{# si utilisation du nb d'enfant  {% for participant in event.participants %} #}
+    {# {% set nbParticipants = nbParticipants + participant.number %} 
+{% endfor %} #}
+{# sinon#}
+{% set nbParticipants = event.famParticipants|length %}
+
+<main>
+    <article id ="article-event">
+       <div  class="event-titre pt-5 text-center mt-5">
+           <h2>{{ event.title }}</h2>
+           <br><hr>
+       </div>
+       <div class="raw container-info-event">
+            <div class="col col-left">
+                <p>Créer par
+                    {% if event.author is null %}
+                        <span class="author"> Utilisateur supprimé</span>
+                    {% else %}
+                        <span class="author">{{ event.author.name }}</span>
+                    {% endif %}
+                <br>le {{ event.createdAt|format_datetime(pattern="dd MMMM Y 'à' H'h'mm", locale='fr')}}
+                <br><span class="text-muted d-none d-sm-block">dernière modification le: {{ event.updatedAt|format_datetime(pattern="dd MMMM Y 'à' H'h'mm", locale='fr') }}</span>
+                </p>
+            </div>
+            <div class="col col-right">
+                 <p>
+                 <i class="bi bi-calendar-event"></i> : {{ event.date|format_datetime(pattern="dd MMMM Y 'à' H'h'mm", locale='fr') }}
+                 <br>
+                 <i class="bi bi-geo-alt"></i> : {{ event.lieu }}
+                 </p>
+            </div>
+        </div>
+        <hr>
+        <div class="raw">
+        
+            {% for message in app.flashes('warning') %}
+                <div class="alert alert-dismissible fade show alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    {{ message }}
+                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            {# {{dump(app.flashes)}} #}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% if event.limite > 0 %}
+            {% if event.complet == 0 %}
+                {% set percent = (((nbParticipants / event.limite) * 100)|round(1, 'ceil'))|number_format(0) %}
+            {% else %}
+            {% set percent = 100 %}
+            {% endif %}
+            <div class="col info-jauge">
+            <p>évenement limité en nombre de participant:</p>
+            </div>
+            <div class="progress" style="height: 2rem;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated 
+                {% if percent < 50 %} bg-primary 
+                {% elseif percent >= 50 and percent < 90 %} bg-warning 
+                {% elseif percent >= 90 %}
+                bg-danger
+                {% endif %}"
+                style="width:{{ percent }}%"
+             role="progressbar" aria-valuenow="{{ (event.complet == 0) ? nbParticipants : 'COMPLET' }} " aria-valuemin="0" aria-valuemax="{{ event.limite }}">{{ (event.complet == 0) ? nbParticipants ~ '/' ~ event.limite : 'COMPLET' }}</div>
+            </div>
+        {% else %}
+            <div class="col info-jauge">
+            <p>évenement non limité en participants.</p>
+            </div>
+        {% endif %}
+        </div>
+        <div class="raw raw-desc">
+            <div class="clearfix event-description-img">
+                <img src="{{ (event.img == null ) ? '/uploads/img/category/' ~ event.category.0.imgDefaut : '/uploads/img/img_event/' ~ event.img}}" class="col-md-6 float-md-end mb-3 ms-md-3" alt="">
+                {% for category in event.category %}
+                    <span class="badge rounded-pill"        style="background-color:{{ category.color }}"> {{ category.name }}</span>
+                {% endfor %}
+                <hr>
+                <h5>Description:</h5>
+                <p>
+                    {{ event.description }}
+                </p>
+            </div>
+        </div>
+        <br>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        {% if is_granted('EDIT', event) %}
+            <a class="btn btn-primary me-2" href="{{ path('site_event_edit', {'id': event.id}) }}" role="button">Modifier l'événement</a>
+        {% endif %}
+       
+        {% if is_granted('DELETE', event) %}
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        Supprimer l'événement
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Supprimer définitivement un événement?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Es-tu sûr de vouloir supprimer définitivement l'événement?
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+
+                    <form action="{{ path('site_event_delete', {'id':event.id}) }}" method="post" class="d-inline">
+                        <button class="btn btn-danger">
+                            Confirmer
+                        </button>
+                        <input type="hidden" name="_method" value="DELETE">
+                    </form>
+
+                </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        </div>
+        <br>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            {% if app.user != event.author %}
+                {% include "site/event/_form_participant.html.twig" %}
+            {% endif %}
+        </div>
+    </article>
+</main>
+{% endblock %}

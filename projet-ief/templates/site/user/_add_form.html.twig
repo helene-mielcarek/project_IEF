@@ -1,0 +1,24 @@
+{# {{dump(form.date)}} #}
+{{ form_errors(form) }}
+{{ form_start(form) }}
+<div class="row d-block d-md-flex">
+    <div class="col col-md-6">
+        {{ form_row(form.name) }}       
+        {{ form_row(form.email) }}
+        {{ form_row(form.password) }}
+    </div>
+    <div class="col col-md-6">
+        {% if app.request.get('_route') == 'site_user_add'%}
+        {{ form_row(form.description) }}
+        {% else %}
+        <div class="d-none" display="hidden">
+            {{ form_row(form.description) }}
+        </div>
+        {% endif %}
+        {{ form_row(form.nbChildren) }}
+    </div>
+</div>
+<div class="d-grid col-6 col-md-3 mx-auto mt-5">
+    <button id="submit-add-event" type="submit" class="btn btn-secondary">{{ info }}</button>
+</div>    
+{{ form_end(form) }}

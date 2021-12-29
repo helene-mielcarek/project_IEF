@@ -1,0 +1,3 @@
+{% for event in events %}          
+    {% include "site/event/_card_event.html.twig" with {event:event} only %}
+{% endfor %}

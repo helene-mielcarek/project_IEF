@@ -1,0 +1,87 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}Mes infos: {{ user.name }}{% endblock %}
+
+{% block body %}
+<main>
+    <article id="article-user">
+        <div  class="event-titre pt-5 text-center mt-5">
+           <h2>Mes informations personnelles:
+           <br>{{ user.name }}</h2>
+           <br><hr>
+       </div>
+       <div class="raw">
+            {% for message in app.flashes('warning') %}
+                <div class="alert alert-dismissible fade show alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    {{ message }}
+                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            {# {{dump(app.flashes)}} #}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+         <div class="raw d-flex align-items-center justify-content-center">
+            <div class="col-5 fw-bolder ">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Nom</li>
+                    <li class="list-group-item list-group-item-light">Adresse mail</li>
+                    <li class="list-group-item">Nombre d'enfant par défaut</li>
+                    <li class="list-group-item list-group-item-light">Compte créé le</li>
+                    <li class="list-group-item">Dernière modification le</li>
+                </ul>
+            </div>
+            <div class="col-5">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ user.name }}</li>
+                    <li class="list-group-item list-group-item-light">{{ user.email }}</li>
+                    <li class="list-group-item">{{ user.nbChildren }}</li>
+                    <li class="list-group-item list-group-item-light">{{ user.createdAt|format_datetime(pattern="dd MMMM Y", locale='fr') }}</li>
+                    <li class="list-group-item">{{ user.updatedAt|format_datetime(pattern="dd MMMM Y", locale='fr') }}</li>
+                </ul>
+            </div>
+         </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end pt-3 me-md-5">
+         {% if is_granted('EDIT', user) %}
+            <a class="btn btn-primary me-2" href="{{ path('site_user_edit', {'id' : user.id}) }}" role="button">Modifier mes informations</a>
+        {% endif %}
+
+        {% if is_granted('DELETE', user) %}
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        Supprimer mon compte
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Supprimer définitivement un compte?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Es-tu sûr de vouloir supprimer définitivement votre compte?
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <form action="#" method="post" class="d-inline">
+                        <button class="btn btn-danger">
+                            Confirmer
+                        </button>
+                        <input type="hidden" name="_method" value="DELETE">
+                    </form>
+
+                </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        </div>
+    </article>
+</main>
+{% endblock %}

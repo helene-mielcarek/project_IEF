@@ -1,0 +1,133 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block body %}
+<main>
+    <div class="py-5 text-center mt-5">
+        <h2>Bienvenue sur le site de partage IEF du Pays de Lorient</h2>
+        <p class="lead">Nous vous proposons cette platefomre pour partager de manière sécuriser photos, documents, idées. Ainsi que de créer et organiser vos événements.</p>
+        <hr>
+    </div>
+    <div id="homePageCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#homePageCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#homePageCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        </div>
+        <div class="carousel-inner homePage">
+            <div class="carousel-item active">
+            <a href="{{ path('site_event_browse') }}"><img src="/uploads/img/home_page/carousel_1.png" class="d-block w-100" alt="..."></a>
+            <div class="carousel-caption ">
+                <h5>Prochaines sorties</h5>
+                </div>
+            </div>
+            <div class="carousel-item">
+            <a href="#"><img src="/uploads/img/home_page/carousel_2.png" class="d-block w-100" alt="..."></a>
+            <div class="carousel-caption ">
+                <h5>Une balade, un parc?</h5>
+                <p class="d-none d-sm-block">Prochainement, retrouvez une carte interactive des lieux de sorties et balade.</p>
+            </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#homePageCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#homePageCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div> 
+        <div class="row g-3 pt-2">
+            <div class="col col-lg-8">
+
+                <div class="content col-md-12 col-lg-12">
+                    <h3>Les 5 derniers événements créés:</h3>
+                    <!--Carousel Wrapper-->
+                    <div id="carouselFiveLastEvent" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-pause="hover" data-bs-interval="10000">
+                    <!--Slides-->
+                        <div class="carousel-inner" role="listbox">
+                            {% for event in lastFiveEvents %}
+                            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                <div class="col-md-4">
+                                    <div class="card content-center">
+                                        <a href="{{ path('site_event_read', {'id': event.id}) }}">
+                                            <div class="card-img-top image-card {{ (event.complet == 1) ? 'div-completed-carousel' : '' }}" style="background-image:url({{ (event.img == null ) ? '/uploads/img/category/' ~ event.category.0.imgDefaut : '/uploads/img/img_event/' ~ event.img}})"></div>
+                                        </a>
+                                        <div class="card-body">
+                                            <a href="{{ path('site_event_read', {'id': event.id}) }}" class="titre">
+                                                <h5 class="card-title">{{ event.title|u.truncate(20, '...') }}</h5>
+                                            </a>
+                                            <p class="text-muted">prévu le {{ event.date|date("d/m/Y à h:i")}} <br>à {{ event.lieu }}</p>
+                                            <p class="card-text">{{ event.description|u.truncate(80, '...')}}</p>
+                                            {% if event.author is null %}
+                                            <p class="author text-capitalize"> par Utilisateur supprimé</p>
+                                            {% else %}
+                                                <p class="author text-capitalize">par {{ event.author.name }}</p>
+                                            {% endif %}
+                                            <div class="boutton">
+                                                <a href="{{ path('site_event_read', {'id': event.id}) }}" class="btn btn-primary">Accéder à l'évenement</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>    
+                            </div>
+                            {% endfor %}
+                        </div>                                
+                        <!--/.Slides-->
+                        <!--Controls-->
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselFiveLastEvent" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselFiveLastEvent" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        <!--/.Controls-->
+                        <!--Indicators-->
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#carouselFiveLastEvent" data-bs-slide-to="0" class="active" aria-label="Slide 0"></button>
+                            <button type="button" data-bs-target="#carouselFiveLastEvent" data-bs-slide-to="1" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#carouselFiveLastEvent" data-bs-slide-to="2" aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#carouselFiveLastEvent" data-bs-slide-to="3" aria-label="Slide 3"></button>
+                            <button type="button" data-bs-target="#carouselFiveLastEvent" data-bs-slide-to="4" aria-label="Slide 4"></button>
+                        </div>
+                        <!--/.Indicators-->
+                    </div> 
+                    <!--/.Carousel Wrapper-->
+                </div>
+                <div class="content col-12 col-lg-12 order-lg-last py-lg-6">
+                    {# list-group si ecran > sm #}
+                        {{include("/site/home/_list_group_event.html.twig", {'events': nextFiveEventsParticipant, 'info': 'prochains'}) }}
+
+                    {# carousel si écran < sm #}
+                        
+                    {% if nextFiveEventsParticipant|length >= 3 %}
+                        {{ include('site/home/_carousel_five.html.twig', { 'events': nextFiveEventsParticipant, 'id': 'next', 'info': 'prochains'})}}
+                    {% else %}
+                        {{ include('site/home/_card_sans_carousel.html.twig', { 'events': nextFiveEventsParticipant, 'id': 'next', 'info': 'prochains'})}}
+
+                    {% endif %}
+                </div>
+
+                <div class="content col-12 p-6 d-lg-none">
+                    
+                    {{include ("/site/home/_list_group_event.html.twig", {'events': lastFiveEventsParticipant, 'info': 'derniers'}) }}
+                    
+                    {# carousel si ecran < sm et event > 3#}
+
+                    {% if lastFiveEventsParticipant|length > 3 %}  
+                        {{ include('site/home/_carousel_five.html.twig', { 'events': lastFiveEventsParticipant, 'id': 'last', 'info': 'derniers'})}}                
+                    {% else %}
+                        {{ include('site/home/_card_sans_carousel.html.twig', { 'events': lastFiveEventsParticipant, 'id': 'last', 'info': 'derniers'})}}  
+                    
+                    {% endif %}
+                </div>
+            </div>
+        <div class="col col-lg-4 d-none d-lg-block">
+            {{ include('/site/home/_aside.html.twig', {'events' : lastFiveEventsParticipant})}}
+        </div>      
+    </div> 
+</main>
+{% endblock %}

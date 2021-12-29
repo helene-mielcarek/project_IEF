@@ -1,0 +1,15 @@
+easy_admin:
+    entities:
+        Category:
+            # ...
+            list:
+                fields:
+                    - { property: 'img_defaut', type: 'image', base_path: '%images_directory_category%', template: 'vich_uploader_image.html.twig' }
+            # ...
+            show:
+                fields:
+                    - { property: 'img_defaut', type: 'image', base_path: '%images_directory_category%', template: 'vich_uploader_image.html.twig' }
+
+            form:
+                fields:
+                    - { property: 'img_defaut_file', type: 'vich_image', template: 'vich_uploader_image.html.twig' }

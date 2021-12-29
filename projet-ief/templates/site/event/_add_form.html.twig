@@ -1,0 +1,57 @@
+{# {{dump(form.date)}} #}
+{{ form_errors(form) }}
+{{ form_start(form) }}
+<div class="row d-block d-md-flex">
+    <div class="col col-md-6">
+        {{ form_row(form.title) }}
+            Date:
+            <div class="raw d-lg-flex">
+                <div class="col col-lg-7 col-xl-6 ">
+                le {{ form_row(form.date.date, {'label': false}) }}
+                </div>
+                <div class="col col-lg-5 col-xl-4 ms-xl-auto">
+                    à{{ form_row(form.date.time, {'label': false}) }}
+                </div>
+            </div>                 
+        {{ form_row(form.lieu) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.img) }}
+    </div>
+    <div class="col col-md-6">
+        {{ form_row(form.category) }}
+        {{ form_row(form.limite) }}
+        <!-- Button trigger modal -->
+        <p>Souhaites-tu enregistrer des participants?</p>
+            <button id="btn-add-participants" type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#select-participant">
+            participants <i class="bi bi-person-plus"></i>
+            </button>
+            <!-- Modal -->
+            <div id="select-participant" class="modal fade" tabindex="-1" aria-labelledby="select-participant" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Ajouter des participants</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div id="div-focus" class="modal-body">
+                            {# si utilisation du nb d'enfant {{ form_row(form.participants) }} #}
+                            {# sinon #}
+                            {{ form_row(form.famParticipants) }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">selectionner</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{ form_row(form.complet) }}
+    </div>
+</div>
+<div class="d-grid col-6 mx-auto mt-5">
+    <button id="submit-add-event" type="submit" class="btn btn-secondary">{{ info }} l'événement</button>
+</div>    
+<div class="d-none" display="hidden">
+    {{ form_row(form.nbParticipants, { attr: {novalidate: 'novalidate'}}) }}
+</div>
+
+{{ form_end(form) }}

@@ -1,0 +1,17 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+<main>
+    <div id="add-container" class="container">
+        <div class="py-5 pb-1 text-center mt-4">
+            <h2>{{ info }} un événement</h2>
+            <hr>
+        </div>
+        <div id="form-add-event" class="col form-event">
+            {% include "site/event/_add_form.html.twig" %}
+        </div>
+    </div>
+</main>
+{% endblock %}

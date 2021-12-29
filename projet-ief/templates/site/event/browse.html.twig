@@ -1,0 +1,54 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block body %}
+<main>
+    <div class="container js-filter">
+        <div class="py-5 pb-1 text-center mt-4">
+            <h2>{{ titrePage }}</h2>
+            <p class="lead">(aidez-moi à trouver un blabla pour ici...)</p>
+            <hr>
+        </div>
+        <div id="filter" class="col header-filter pt-md-4">
+            {% include "site/event/_filter.html.twig" with { form:form } %}
+            <hr>
+        </div>
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-dismissible fade show alert-danger" role="alert">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+        {# {{dump(app.flashes)}} #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+    <div id="card-event" class="col mt-2 my-5 ">
+        <div class="col-12 mb-5 d-flex justify-content-end js-browse-event">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end me-2">
+                <a href="{{ path('site_event_add') }}" class="btn btn-sm btn-primary" role="button" aria-disabled="false">ajouter un évement</a>
+            </div>
+        </div>
+                {% if events.getTotalItemCount == 0 %}
+                    <div class="col text-center no-result">
+                        <h3>
+                            Aucun résultat trouvé.
+                        </h3>
+                    </div>                 
+                {% endif %}
+            <div class="row row-cols-1 row-cols-md-2 js-filter-content">
+                {% include "site/event/_content.html.twig" %}
+            </div>
+                <div id="pagination" class="mt-3 js-filter-pagination {{(events.getTotalItemCount == 0) ? 'd-none' : ''}}" aria-label="Page navigation">
+                {% include "site/event/_pagination.html.twig" %}
+                </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

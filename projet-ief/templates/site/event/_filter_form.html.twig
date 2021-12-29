@@ -1,0 +1,15 @@
+{{ form_start(form, {attr: {class: 'js-filter-form'}}) }}
+
+    <div class="spinner-border text-secondary js-loading" role="status" aria-hidden="true" style="display: none">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    {{ form_row(form.q) }}
+
+    <h3>Catégories:</h3>
+    {{ form_row(form.categories) }}
+
+    <h3>Évenements:</h3>
+    {{ form_row(form.limite) }}
+
+    {{ form_row(form.date) }}
+{{ form_end(form) }}

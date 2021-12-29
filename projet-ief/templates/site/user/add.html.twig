@@ -1,0 +1,22 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+<main>
+    <div id="add-container" class="container">
+        <div class="py-5 pb-1 text-center mt-4">
+            {% if app.request.get('_route') == 'site_user_add'%}
+            
+            <h2>{{ title }}</h2>
+            {% else %}
+            <h2>{{ info }}</h2>
+            {% endif %}
+            <hr>
+        </div>
+        <div id="form-add-user" class="col form-user">
+            {% include "site/user/_add_form.html.twig" %}
+        </div>
+    </div>
+</main>
+{% endblock %}

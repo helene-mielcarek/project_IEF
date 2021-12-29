@@ -1,0 +1,53 @@
+{# si utilisation du nb d'enfant {% set nbParticipants = 0 %}
+{% for participant in event.participants %}
+    {% set nbParticipants = nbParticipants + participant.number %} 
+{% endfor %} #}
+{# sinon#}
+{% set nbParticipants = event.famParticipants|length %}
+{# {{ dump(nbParticipants) }} #}
+<article id="event-{{ event.id }}" class="col container-card">
+    <div  class="card">
+        <div class="card-header">
+            <h5 class="card-title">{{ event.title|u.truncate('30', "...") }}</h5>
+            <div class="col position-absolute top-0 end-0 translate-middle-y" style="width: max-content">
+                {% for category in event.category %}
+                    {% if loop.index > 3 %}
+                        <span class="badge rounded-pill" style="background-color:grey">...</span>
+                    {% else %}
+                        <span class="badge rounded-pill"        style="background-color:{{ category.color }}"> {{ category.name }}  </span>
+                    {% endif %}
+                {% endfor %}                     
+            </div>
+        </div>
+        {% if event.limite > 0 %}
+            {% if event.complet == 0 %}
+                {% set percent = (((nbParticipants / event.limite) * 100)|round(1, 'ceil'))|number_format(0) %}
+            {% else %}
+            {% set percent = 100 %}
+            {% endif %}
+            <div class="progress" style="height: 1.5rem;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated 
+                {% if percent < 50 %} bg-primary 
+                {% elseif percent >= 50 and percent < 90 %} bg-warning 
+                {% elseif percent >= 90 %}
+                bg-danger
+                {% endif %}"
+                style="width:{{ percent }}%"                        
+                role="progressbar" aria-valuenow="{{ nbParticipants }}" aria-valuemin="0" aria-valuemax="{{ event.limite }}" ></div>
+            </div>
+        {% endif %}
+       <a href="{{ path('site_event_read', {'id': event.id}) }}">
+            <div class="image-card {{ (event.complet == 1) ? 'div-completed' : '' }}" style="background-image:url({{ (event.img == null ) ? '/uploads/img/category/' ~ event.category.0.imgDefaut : '/uploads/img/img_event/' ~ event.img}})"></div>
+       </a>
+        <div class="card-body">
+            <p class="text-muted">prévu le {{ event.date|date("d/m/Y à h:i")}}<br>à {{event.lieu }}</p>
+            <p class="card-text">{{ event.description|u.truncate(120, '...') }}</p>
+            {% if event.author is null %}
+             <p class="author text-capitalize">par Utilisateur supprimé</p>
+            {% else %}
+                <p class="author text-capitalize">par {{ event.author.name }}</p>
+            {% endif %}
+            <a href="{{ path('site_event_read', {'id': event.id}) }}" class="btn btn-primary">En voir plus</a>
+        </div>
+    </div>
+</article>
