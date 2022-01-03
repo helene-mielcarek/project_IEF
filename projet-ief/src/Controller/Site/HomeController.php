@@ -2,14 +2,13 @@
 
 namespace App\Controller\Site;
 
-use App\Repository\CategoryRepository;
 use App\Repository\EventRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/", name="site_home_")
+ * @Route("/home", name="site_home_")
  */
 class HomeController extends MainController
 {
@@ -32,7 +31,7 @@ class HomeController extends MainController
         $lastFiveEventsParticipant = $eventRepository->findLastFiveParticipant($user->getId());
         //3:
         $nextFiveEventsParticipant =$eventRepository->findNextFiveParticipant($user->getId());
-        dump($nextFiveEventsParticipant, $lastFiveEventsParticipant);
+        // dump($nextFiveEventsParticipant, $lastFiveEventsParticipant);
         // dd($lastFiveEventsParticipant);
             //4:
         // $categories = $this->findAllCategory();

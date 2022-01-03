@@ -6,9 +6,25 @@
 <main>
     <div class="py-5 text-center mt-5">
         <h2>Bienvenue sur le site de partage IEF du Pays de Lorient</h2>
-        <p class="lead">Nous vous proposons cette platefomre pour partager de manière sécuriser photos, documents, idées. Ainsi que de créer et organiser vos événements.</p>
+        <p class="lead">Nous vous proposons cette plateforme pour partager de manière sécuriser photos, documents, idées. Ainsi que de créer et organiser vos événements.</p>
         <hr>
     </div>
+        <div class="raw">
+            {% for message in app.flashes('warning') %}
+                <div class="alert alert-dismissible fade show alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    {{ message|raw }}
+                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            {# {{dump(app.flashes)}} #}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message|raw }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
     <div id="homePageCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6000">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#homePageCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>

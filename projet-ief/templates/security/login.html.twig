@@ -1,10 +1,10 @@
-{% extends 'base.html.twig' %}
+    {% extends app.user ? 'site/base.html.twig' : 'base.html.twig' %}
 
 {% block title %}Connectes-toi!{% endblock %}
 
 {% block body %}
 <main>
-    <div class="container">
+    <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-12 col-sm-8 col-md-6 p-5">
                 <form method="post">
@@ -19,10 +19,11 @@
                             <a href="{{ path('app_logout') }}">Se déconnecter</a>
                         </div>
                     {% endif %}
-
                     <h1 class="h3 mb-3 font-weight-normal">Connectez-vous</h1>
                     <label for="inputEmail">Adresse mail</label>
-                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+                    <input type="email" value="
+                    {% if app.request.attributes.get('_route') == 'app_login' %}
+                    {{ last_username }}{% endif %}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
                     <label for="inputPassword">Mot de passe</label>
                     <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
 
@@ -44,9 +45,10 @@
                     <button class="btn btn-lg btn-primary" type="submit">
                         Connexion
                     </button>
+
                 </form>
             </div>
-    </div>
+        </div>
     </div>
 </main>
 {% endblock %}

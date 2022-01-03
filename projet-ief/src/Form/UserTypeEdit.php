@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class UserType extends AbstractType
+class UserTypeEdit extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -36,12 +36,12 @@ class UserType extends AbstractType
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'first_options' => ['label' => 'Mot de passe'],
-                'second_options' => ['label' => 'Confirmer votre mot de passe'],
+                'first_options' => ['label' => 'Mot de passe', 'empty_data' => 'no modificated'],
+                'second_options' => ['label' => 'Confirmer votre mot de passe', 'empty_data' => 'no modificated'],
                 'first_name' => 'first_password',
                 'second_name' => 'second_password',
                 'invalid_message' => 'Les deux valeurs doivent être identiques',
-                'required' => true,
+                'required' => false,
             ])
             ->add('name', TextType::class, [
                 'label' => 'Choisissez un nom',
@@ -50,13 +50,6 @@ class UserType extends AbstractType
                     'placeholder' => 'Votre nom, pseudo'
                 ],
                 'help' => 'par ex: "Hélène et les garçons"',
-            ])
-            ->add('description', TextareaType::class, [
-                'label' => 'Décrivez-vous en quelques mots.',
-                'required' => true,
-                'attr' => [
-                    'placeholder' => 'En ief depuis peu, sur la commune de Lorient......'
-                ]
             ])
             ->add('nbChildren', IntegerType::class, [
                 'label' => 'Combien y aurait-il d\'enfants en général aux événements?',
