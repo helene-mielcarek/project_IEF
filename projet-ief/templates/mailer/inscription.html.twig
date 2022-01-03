@@ -8,6 +8,4 @@
 <p>En date du : {{ user.createdAt|format_datetime(pattern="dd MMMM Y 'à' H'h'mm", locale='fr') }}</p>
 
 
-<p>Pour modérer cette inscription, <a href="{{ url('site_admin_user_validate_subscription', {"token": token}) }}">clique ici</a></p>
-
-{{ token }}
+<p>Pour modérer cette inscription, <a href="{{ url('site_admin_user_validate_subscription', {"id": user.id}) }}">clique ici</a></p>

@@ -67,7 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $events;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Event::class, mappedBy="participants")
+     * @ORM\ManyToMany(targetEntity=Event::class, mappedBy="famParticipants")
      */
     private $eventsJoined;
 

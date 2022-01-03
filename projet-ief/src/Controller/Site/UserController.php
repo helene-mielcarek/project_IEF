@@ -65,10 +65,10 @@ class UserController extends AbstractController
 
             //Boucle pour envoyer un mail à chaque admin
             foreach ($admins as $admin) {
-                $mailer->sendMailSubRequest($admin->getEmail(), $user->getToken(), $user);
+                $mailer->sendMailSubRequest($admin->getEmail(), $user);
             }
 
-            $this->addFlash('success', 'Votre demande a été envoyée, attendez sa validation par un admin, merci.');
+            $this->addFlash('success', 'Votre demande a été envoyé, attendez sa validation par un admin, merci.');
 
             return $this->redirectToRoute('site_main_index');
 
@@ -123,14 +123,16 @@ class UserController extends AbstractController
     /**
      * @Route("/delete/{id}", name="delete", methods={"DELETE"})
      */
-    public function delete(int $id, Request $request, User $user): Response
+    public function delete(int $id, Request $request, User $user, UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted('DELETE', $user);
-        // if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->request->get('_token'))) {
+        // dd($user);
+
+        // if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
             // dd($user);
-            // $entityManager = $this->getDoctrine()->getManager();
-            // $entityManager->remove($user);
-            // $entityManager->flush();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($user);
+            $entityManager->flush();
             $this->addFlash('success', 'Demande et compte utilisateur supprimé.');
         // }
         return $this->redirectToRoute('site_home_index', [], Response::HTTP_SEE_OTHER);

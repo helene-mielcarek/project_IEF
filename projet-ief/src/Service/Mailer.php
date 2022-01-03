@@ -12,14 +12,13 @@ class Mailer {
      * @var MailerInterface
      */
     private $mailer;
-    private $userRepository;
 
     public function __construct(MailerInterface $mailer, UserRepository $userRepository)
     {
         $this->mailer = $mailer;
         $this->userRepository = $userRepository;
     }
-    public function sendMailSubRequest($email, $token, $user) 
+    public function sendMailSubRequest($email, $user) 
     {        
         $email = (new TemplatedEmail())
             ->from('resgister@example.com')
@@ -31,7 +30,6 @@ class Mailer {
 
             // pass variables (name => value) to the template
             ->context([
-                'token' => $token,
                 'user' => $user,
             ])
         ;
