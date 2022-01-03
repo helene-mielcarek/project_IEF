@@ -11,9 +11,6 @@
         {% if app.request.get('_route') == 'site_user_add'%}
         {{ form_row(form.description) }}
         {% else %}
-        <div class="d-none" display="hidden">
-            {{ form_row(form.description) }}
-        </div>
         {% endif %}
         {{ form_row(form.nbChildren) }}
     </div>

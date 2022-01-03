@@ -1,4 +1,4 @@
-{% extends 'site/base.html.twig' %}
+{% extends app.user ? 'site/base.html.twig' : 'base.html.twig' %}
 
 {% block title %}{{ title }}{% endblock %}
 
@@ -7,7 +7,6 @@
     <div id="add-container" class="container">
         <div class="py-5 pb-1 text-center mt-4">
             {% if app.request.get('_route') == 'site_user_add'%}
-            
             <h2>{{ title }}</h2>
             {% else %}
             <h2>{{ info }}</h2>
@@ -15,7 +14,19 @@
             <hr>
         </div>
         <div id="form-add-user" class="col form-user">
+        {% if app.request.get('_route') == 'site_user_add'%}
+            {% if app.user %}
+                <p class="lead text-center">
+                    Vous êtes déjà connecté
+                    <br>
+                    <a href="{{ path('site_home_index') }}">Revenir sur l'accueil</a>
+                </p> 
+            {% else %}
+                {% include "site/user/_add_form.html.twig" %}
+            {% endif %}
+        {% else %}
             {% include "site/user/_add_form.html.twig" %}
+        {% endif %}
         </div>
     </div>
 </main>

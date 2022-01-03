@@ -12,90 +12,91 @@
 
     </head>
     <body>
-        {% block nav %}    
         <div class="container">
-        <header>
-            <nav class="navbar navbar-nav fixed-top navbar-expand-lg navbar-light bg-light">
-                <div class="container-fluid">
-                    <a class="navbar-brand text-capitalize" href="{{ path('site_home_index')}}">IEF Pays de Lorient</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link {% if app.request.attributes.get('_route') == 'site_home_index' %}active{% endif %} text-capitalize" aria-current="page" href="{{ path('site_home_index') }}">accueil</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') == 'site_event_browse' %}active{% endif %}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    événements
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li>
-                                        <a class="dropdown-item" href="{{ path('site_event_add') }}">ajouter un événement</a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" href="{{ path('site_event_browse')}}">Tous</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                        {% if app.user %}
-                        <ul class="navbar-nav me-4 mb-2 mb-lg-0">
-                            <a href="{{ path('app_logout')}}" class="nav-link">Déconnexion</a>
-                        </ul>  
-                        {% endif %}
-                        <ul class="navbar-nav me-4 mb-2 mb-lg-0">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-capitalize" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-file-earmark-person-fill"> {{ app.user.name }} </i>
-                                </a>
-                                <ul id="menu-infos" class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li>
-                                        <a class="dropdown-item" href="{{ path('site_event_browse_user', {'id' : app.user.id}) }}">mes événements</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">mes bibliothèques</a>
-                                    </li>
+            {% block nav %}    
+            <header>
+                <nav class="navbar navbar-nav fixed-top navbar-expand-lg navbar-light bg-light">
+                    <div class="container-fluid">
+                        <a class="navbar-brand text-capitalize" href="{{ path('site_main_index')}}">IEF Pays de Lorient</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link {% if app.request.attributes.get('_route') == 'site_home_index' %}active{% endif %} text-capitalize" aria-current="page" href="{{ path('site_home_index') }}">accueil</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle {% if app.request.attributes.get('_route') == 'site_event_browse' %}active{% endif %}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        événements
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="{{ path('site_event_add') }}">ajouter un événement</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{ path('site_event_browse')}}">Tous</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            {% if app.user %}
+                            <ul class="navbar-nav me-4 mb-2 mb-lg-0">
+                                <a href="{{ path('app_logout')}}" class="nav-link">Déconnexion</a>
+                            </ul>  
+                            {% endif %}
+                            <ul class="navbar-nav me-4 mb-2 mb-lg-0">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-capitalize" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-file-earmark-person-fill"> {{ app.user.name }} </i>
+                                    </a>
+                                    <ul id="menu-infos" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="{{ path('site_event_browse_user', {'id' : app.user.id}) }}">mes événements</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">mes bibliothèques</a>
+                                        </li>
 
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" href="{{ path('site_user_read', {'id' : app.user.id}) }}">mes infos</a>
-                                    </li>
-                                    {% if is_granted('ROLE_ADMIN') %}
-                                    <li><hr class="dropdown-divider">
-                                        <a class="dropdown-item" href=" {{ path("admin") }}">Administration</a>
-                                    </li>
-                                    {% endif %}
-                                </ul>
-                            </li>
-                        </ul>
-                        
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{ path('site_user_read', {'id' : app.user.id}) }}">mes infos</a>
+                                        </li>
+                                        {% if is_granted('ROLE_ADMIN') %}
+                                        <li><hr class="dropdown-divider">
+                                            <a class="dropdown-item" href=" {{ path("admin") }}">Administration</a>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                            </ul>
+                            
+                        </div>
                     </div>
-                </div>
-            </nav>
-        </header>
-{% endblock %}
-        <div id="container-page"  class="container">
-        {% block body %}{% endblock %}
-        {% block footer %}
-            <footer class="my-5 pt-5 text-muted text-center text-small">
-                <p class="mb-1">© 2021 M²K</p>
-                <ul class="list-inline">
-                    <li class="list-inline-item">
-                        <a href="#">Charte de bienveillance</a>
-                    </li>
-                    {# <li class="list-inline-item">
-                        <a href="#">Terms</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a href="#">Support</a>
-                    </li> #}
-                </ul>
-            </footer>
-        {% endblock %}
+                </nav>
+            </header>
+            {% endblock %}
+            <div id="container-page"  class="container">
+            {% block body %}{% endblock %}
+            </div>
         </div>
+            {% block footer %}
+                <footer class="my-5 text-muted text-center text-small">
+                    <p class="mb-1">© 2021 M²K</p>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <a href="#">Charte de bienveillance</a>
+                        </li>
+                        {# <li class="list-inline-item">
+                            <a href="#">Terms</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#">Support</a>
+                        </li> #}
+                    </ul>
+                </footer>
+            {% endblock %}
     </body>
     {% block javascripts %}
         {{ encore_entry_script_tags('app') }}

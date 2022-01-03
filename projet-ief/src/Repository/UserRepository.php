@@ -64,4 +64,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ;
     }
     */
+
+    /**
+     * Requête pour récuperer les utilisateur avec un rôle donné
+     *
+     * @param [type] $role
+     * @return User[] Returns an array of User objects     
+     */
+    public function findAdmins($role)
+    {
+        return $this->createQueryBuilder('u')
+        ->andWhere("u.roles IN (:role)")
+        ->setParameter('role', $role)
+        ->getQuery()
+        ->getResult()
+        ;
+    }
 }

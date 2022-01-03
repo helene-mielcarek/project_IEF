@@ -219,7 +219,6 @@ class EventController extends MainController
             $this->addFlash('warning', 'Cet évenement est déjà complet.');
             return $this->redirectToRoute('site_event_read', ['id' => $event->getId()]);
         }
-
     }
 
 
@@ -347,7 +346,6 @@ class EventController extends MainController
             $entityManager->flush();
             $this->addFlash('success', 'Événement supprimé.');
         // }
-
         return $this->redirectToRoute('site_event_browse', [], Response::HTTP_SEE_OTHER);
     }
 

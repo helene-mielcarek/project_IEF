@@ -1,28 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}{% endblock %}</title>
         {# Run `composer require symfony/webpack-encore-bundle`
            and uncomment the following Encore helpers to start using Symfony UX #}
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
     </head>
     <body>
-        <div id="logged-user">
-            {% if app.user %}
-                {{ app.user.name }} <a href="{{ path('app_logout')}}" class="btn btn-danger">Déconnexion</a>
-            {% else %}
-                {# <a href="{{ path('app_login') }}">Connexion</a> #}
-            {% endif %}
+        <div class="container">
+            {% block nav %}    
+                <header>
+                    <nav class="navbar navbar-nav fixed-top navbar-expand-lg navbar-light bg-light">
+                        <div class="container-fluid">
+                            <a class="navbar-brand text-capitalize" href="{{ path('site_main_index')}}">IEF Pays de Lorient</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                    <li class="nav-item">
+                                    
+                                    </li>
+                                </ul>
+                                {% if app.user %}
+                                <ul class="navbar-nav me-4 mb-2 mb-lg-0">
+                                    <a href="{{ path('app_logout')}}" class="nav-link">Déconnexion</a>
+                                </ul>
+                                <ul class="navbar-nav me-4 mb-2 mb-lg-0">
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle text-capitalize" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-file-earmark-person-fill"> {{ app.user.name }} </i>
+                                        </a>
+                                        <ul id="menu-infos" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ path('site_event_browse_user', {'id' : app.user.id}) }}">mes événements</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#">mes bibliothèques</a>
+                                            </li>
+
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item" href="{{ path('site_user_read', {'id' : app.user.id}) }}">mes infos</a>
+                                            </li>
+                                            {% if is_granted('ROLE_ADMIN') %}
+                                            <li><hr class="dropdown-divider">
+                                                <a class="dropdown-item" href=" {{ path("admin") }}">Administration</a>
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                    </li>
+                                </ul>
+                                {% else %}  
+                                <ul class="navbar-nav me-4 mb-2 mb-lg-0">
+                                    <a href="{{ path('app_login')}}" class="nav-link">
+                                        <i class="bi bi-file-earmark-person-fill">Connexion </i>
+                                    </a>
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </nav>
+                </header>
+            {% endblock %}
+            <div id="container-page"  class="container">
+            {% block body %}
+            {% endblock %}
+            </div>
         </div>
-        {% block body %}
+        {% block footer %}
+            <footer class="footer my-5 text-muted text-center text-small">
+                <div class="row">
+                    <div class="col">
+                        <p class="mb-1">© 2021 M²K</p>
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                <a href="#">Charte de bienveillance</a>
+                            </li>
+                            {# <li class="list-inline-item">
+                                <a href="#">Terms</a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="#">Support</a>
+                            </li> #}
+                        </ul>
+                    </div>
+                </div>
+            </footer>
         {% endblock %}
     </body>
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+
 </html>

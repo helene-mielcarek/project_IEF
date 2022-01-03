@@ -1,0 +1,13 @@
+<br>
+<h1>Demande pour une nouvelle inscription</h1>
+<h2>Récapitulatif de la demande</h2>
+<p>Nom : {{ user.name }}</p>
+<p>email: {{ user.email }}</p>
+<p>Description: {{ user.description }}</p>
+<p>Nombre d'enfant:{{ user.nbChildren}}</p> 
+<p>En date du : {{ user.createdAt|format_datetime(pattern="dd MMMM Y 'à' H'h'mm", locale='fr') }}</p>
+
+
+<p>Pour modérer cette inscription, <a href="{{ url('site_admin_user_validate_subscription', {"token": token}) }}">clique ici</a></p>
+
+{{ token }}
