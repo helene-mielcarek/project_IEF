@@ -1,0 +1,18 @@
+<br>
+<h1>Votre demande inscription</h1>
+<h2>{{ (validate == true) ? ' a été acceptée ' : ''}}sur IEF Pays de Lorient</h2>
+<h3>Récapitulatif de votre demande</h3>
+<p>Nom : {{ user.name }}</p>
+<p>email: {{ user.email }}</p>
+<p>Description: {{ user.description }}</p>
+<p>Nombre d'enfant:{{ user.nbChildren}}</p> 
+<p>En date du : {{ user.createdAt|format_datetime(pattern="dd MMMM Y 'à' H'h'mm", locale='fr') }}</p>
+
+{% if validate == true %}
+    <h4>Votre demande à été validée par un administrateur.</h4>
+    <p>Connectez-vous en <a href="{{ url('site_home_index') }}">cliquant ici</a>.</p>
+{% else %}
+    <p>Vous recevrez un mail une fois votre demande acceptée.</p>
+{% endif %}
+<br>
+<p>L'équipe IEF Pays de Lorient</p>

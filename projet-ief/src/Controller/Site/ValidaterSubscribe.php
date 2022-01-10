@@ -5,6 +5,7 @@ namespace App\Controller\Site;
 use App\Controller\Admin\UserCrudController;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\Mailer;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,6 +34,7 @@ class ValidaterSubscribe extends UserController
         $connectedUser=$this->getUser();
         $this->denyAccessUnlessGranted('VALIDATE', $connectedUser);
         $requestingUser = $userRepository->findOneBy(["id" => $id]);
+        // dd($requestingUser);
 
         //Vérification si la demande a été modérée ou non
         if($this->demandAlreadyModerate($requestingUser) === false){
@@ -50,8 +52,10 @@ class ValidaterSubscribe extends UserController
      * @Route("/validate-user/{id}", name="validate", methods={"POST"})
      * @param int $id
      */
-    public function validateUser(User $requestingUser = null)
+    public function validateUser(int $id, Mailer $mailer, UserRepository $userRepository)
     {
+        $requestingUser = $userRepository->findOneBy(["id" => $id]);
+        // dd($requestingUser);
         //Vérification si la demande a été modérée ou non
         //dans le cas ou la demande d'inscription aurait déjà été modérée, le token serait vide, 2 possibilité: 
         //-soit la demande a été accepté => compte validé => role modifié; 
@@ -66,7 +70,9 @@ class ValidaterSubscribe extends UserController
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'La demande a été acceptée, l\'utilisateur aura maintenant accès au site, retrouve <a href="' . $this->generateUrlListUsers() . '">ici</a> la liste des utilisateurs');
             
-            // TODO:envoie email de confirmation à l'utilisateur
+            //envoie email de confirmation à l'utilisateur
+            $mailer->sendMailUserSub($requestingUser->getEmail(), $requestingUser, true);
+
         }
        //redirection vers la page d'accueil.
         return $this->redirectToRoute('site_home_index');

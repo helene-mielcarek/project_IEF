@@ -11,7 +11,22 @@
                     {% if error %}
                         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                     {% endif %}
-
+                    <div class="raw">
+                        {% for message in app.flashes('warning') %}
+                            <div class="alert alert-dismissible fade show alert-danger" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                {{ message|raw }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                        {# {{dump(app.flashes)}} #}
+                        {% for message in app.flashes('success') %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ message|raw }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
                     {% if app.user %}
                         <div class="mb-3">
                             Vous êtes connecté en tant que {{ app.user.username }}

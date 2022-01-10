@@ -69,7 +69,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <form action="#" method="post" class="d-inline">
+                    <form action="{{ path('site_user_delete', {'id':user.id}) }}" method="post" class="d-inline">
                         <button class="btn btn-danger">
                             Confirmer
                         </button>

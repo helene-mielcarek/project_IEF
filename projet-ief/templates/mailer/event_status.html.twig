@@ -1,0 +1,12 @@
+<br>
+<h1>{{event.title}}</h1>
+{% if participation == true %}
+    <h2>Souhaitez-vous modifier son status?</h2>
+    <p>Un participant s'est retiré, votre évenement a de nouveau de la place,<br> souhaitez-vous le rendre ouvert aux participations?</p>
+{% else %}
+    <h2>Bravo!</h2>
+    <p>Votre évement est maintenant complet!</p>
+{% endif %}
+    <p>Vous pouvez modifier votre évenement <a href="{{ url('site_event_edit', {"id": event.id}) }}">ici</a>.</p>
+<br>
+<p>L'équipe IEF Pays de Lorient</p>

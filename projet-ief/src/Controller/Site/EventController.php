@@ -4,15 +4,12 @@ namespace App\Controller\Site;
 
 use App\Data\SearchData;
 use App\Entity\Event;
-use App\Entity\Participant;
-use App\Entity\User;
 use App\Form\EventType;
 use App\Form\SearchType;
 use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use App\Service\ImageUploader;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\Mailer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -156,30 +153,21 @@ class EventController extends MainController
      * Ajout en tant que participant si on utilise un nombre de familles participantes(USER)
      * @Route("/{id}/participation", name="add_participant", requirements={"id" : "\d+", "nb" : "\d+"}, methods={"GET"} )
      */
-    public function addParticipant(int $id, Event $event) {
+    public function addParticipant(int $id, Event $event, Mailer $mailer) {
         //vérification avec le voter, des droits de l'utilisateur
         $this->denyAccessUnlessGranted('PARTICIPE', $event);
+        //récupérer nb de famille participantes
+        $nbFamParticipants = count($event->getFamParticipants()->toArray());
         
         //modification seulement si event non complet
         if($event->getComplet() == false){
-            //récupérer nb de famille participantes
-            $nbFamParticipants = count($event->getFamParticipants()->toArray());
             //recherche si User est en participant dans l'event
             // dd($event->getFamParticipants()->toArray());
             foreach ($event->getFamParticipants()->toArray() as $participation) {
                 //si partcipant deja enregistré, c'est un modification
                 if ($this->getUser() === $participation) {
                     //suppression du User des participants
-                    // dd('déja enregistré');
-                    $event->removeFamParticipant($this->getUser());
-                    //retirer 1 au nb de participant
-                    $newNbFamParticipants = $nbFamParticipants - 1;
-                    if ($newNbFamParticipants < $event->getLimite() && $event->getLimite() != 0) {
-                        //event complet
-                        $event->setComplet(false);
-                    }
-                    //ajout en bdd
-                    $this->getDoctrine()->getManager()->flush();
+                    $this->removeParticipant($event, $nbFamParticipants, $mailer);
                     $this->addFlash('success', 'Ok, on enregistre!');
                     return $this->redirectToRoute('site_event_read', ['id' => $event->getId()]);
 
@@ -204,6 +192,8 @@ class EventController extends MainController
                         if ($newNbFamParticipants === $event->getLimite() && $event->getLimite() != 0) {
                             //event complet
                             $event->setComplet(true);
+                            //envoie d'un mail à l'autheur pour le prévenir
+                            $mailer->sendMailAuthorEvent($event->getAuthor()->getEmail(), $event, $event->getAuthor(), false);
                         }
                         //ajout en bdd
                         $this->getDoctrine()->getManager()->flush();
@@ -214,13 +204,60 @@ class EventController extends MainController
                 }
             }
         }
-        //si event complet message error et redirect
+        //si event complet :
+        //recherche si participant ou pas dans la function removeParticipant
+        //pour supprimer la participation
         else {
-            $this->addFlash('warning', 'Cet évenement est déjà complet.');
-            return $this->redirectToRoute('site_event_read', ['id' => $event->getId()]);
+            //si participant return rien, sinon return false, 
+            //  donc message error et redirect
+            if($this->removeParticipant($event, $nbFamParticipants, $mailer) === false) {
+                $this->addFlash('warning', 'Cet évenement est déjà complet.');
+                return $this->redirectToRoute('site_event_read', ['id' => $event->getId()]);
+            } else {
+                return $this->redirectToRoute('site_event_read', ['id' => $event->getId()]);
+            };
+            
         }
     }
 
+
+    public function removeParticipant($event, $nbFamParticipants, $mailer)
+    {
+        dump($event->getFamParticipants()->toArray());
+        //Pour enregistré si le user est trouvé dans FamParticipants
+        $match = [];
+
+        foreach ($event->getFamParticipants()->toArray() as $participation) {
+            // dd($this->getUser());
+            if ($this->getUser() === $participation) {
+                //suppression du User des participants
+                // dd('déja enregistré');
+                $event->removeFamParticipant($this->getUser());
+                //retirer 1 au nb de participant
+                $newNbFamParticipants = $nbFamParticipants - 1;
+                if ($newNbFamParticipants < $event->getLimite() && $event->getLimite() != 0) {
+                    //event complet
+                    //$event->setComplet(false);
+                    //envoyer un mail à l'auteur pour qu'il soit puisse au besoin garder son évenement complet
+                    $mailer->sendMailAuthorEvent($event->getAuthor()->getEmail(), $event, $event->getAuthor(), true);
+                }
+                //ajout en bdd
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('success', 'Ok, on enregistre!');
+                $match[] = true;
+            }
+            else {
+                $match[] = false;
+            }
+        }
+        if(!in_array(true, $match)){   
+            dd('nop');
+            return false;
+        } else {
+            return true;
+        }
+
+    }
 
     /**
      * @Route("/add", name="add", methods={"GET", "POST"} )
@@ -265,7 +302,7 @@ class EventController extends MainController
      */
     public function edit(int $id, Request $request, ImageUploader $imageUploader, Event $event): Response
     {
-        $this->denyAccessUnlessGranted('VIEW', $event);
+        $this->denyAccessUnlessGranted('EDIT', $event);
         $form = $this->createForm(EventType::class, $event);
         // dd($event);
         $form->handleRequest($request);

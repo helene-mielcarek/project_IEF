@@ -10,6 +10,7 @@ use App\Service\Mailer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -60,15 +61,19 @@ class UserController extends AbstractController
             
             //Enovie d'un mail aux admins pour validation du compte
             //utilisation de mailer
-                    //récupération des utilisateurs administrateurs
-            $admins = $userRepository->findAdmins('["ROLE_ADMIN"]');
+                //récupération des utilisateurs administrateurs
+                $admins = $userRepository->findAdmins('["ROLE_ADMIN"]');
 
             //Boucle pour envoyer un mail à chaque admin
             foreach ($admins as $admin) {
                 $mailer->sendMailSubRequest($admin->getEmail(), $user);
             }
 
-            $this->addFlash('success', 'Votre demande a été envoyé, attendez sa validation par un admin, merci.');
+            //envoie mail de la demande à l'utilisateur
+            $mailer->sendMailUserSub($user->getEmail(), $user, false);
+
+
+            $this->addFlash('success', 'Votre demande a été envoyée, attendez sa validation par un admin, merci.');
 
             return $this->redirectToRoute('site_main_index');
 
@@ -123,7 +128,7 @@ class UserController extends AbstractController
     /**
      * @Route("/delete/{id}", name="delete", methods={"DELETE"})
      */
-    public function delete(int $id, Request $request, User $user, UserRepository $userRepository): Response
+    public function delete(int $id, User $user, UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted('DELETE', $user);
         // dd($user);
@@ -131,10 +136,24 @@ class UserController extends AbstractController
         // if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
             // dd($user);
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($user);
-            $entityManager->flush();
-            $this->addFlash('success', 'Demande et compte utilisateur supprimé.');
+            //si c'est l'utilisateur qui supprime son compte
+            if($this->getUser() == $userRepository->find($id)){
+                $this->container->get('security.token_storage')->setToken(null);
+                $entityManager->remove($userRepository->find($id));
+                $entityManager->flush();
+
+                //suppression session
+                // $session = new Session();
+                // $session->invalidate();
+                $this->addFlash('success', 'Compte utilisateur supprimé.');
+                return $this->redirectToRoute('site_main_index');
+            }else{
+                $entityManager->remove($userRepository->find($id));
+                $entityManager->flush();
+
+                $this->addFlash('success', 'La demande et le compte utilisateur ont été supprimés.');
+                return $this->redirectToRoute('site_home_index', [], Response::HTTP_SEE_OTHER);
+            }
         // }
-        return $this->redirectToRoute('site_home_index', [], Response::HTTP_SEE_OTHER);
     }
 }

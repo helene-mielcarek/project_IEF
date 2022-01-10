@@ -24,6 +24,7 @@
       </button>
     {% endif %} #}
 {# sinon #}
+{% if event.date >= date() %}
 {% if app.user in event.FamParticipants %}
   <button type="button" class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#add-participant">
     Modifier notre participation
@@ -32,6 +33,13 @@
     Tu veux y participer?
   </button>
   {% endif %}
+{% else %}
+  <div class="btn-group" role="group" aria-label="Basic outlined example">
+    <a class="btn btn-outline-primary" href="{{ path('site_librairy_browse_for_event', {'id': event.id}) }}" role="button">Voir les photos</a>
+    <a class="btn btn-outline-primary" href="#" role="button">Partager des photos</a>
+
+  </div>
+{% endif %}
 
   <!-- Modal -->
   <div class="modal fade" id="add-participant" tabindex="-1" aria-labelledby="add-participantLabel" aria-hidden="true">
